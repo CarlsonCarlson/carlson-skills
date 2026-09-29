@@ -1,12 +1,12 @@
 ## What it does
 
-`handoff` compacts the conversation you are in into a **handoff document**: one markdown file, written to your OS's temporary directory rather than into the workspace, that a fresh [agent](https://www.aihero.dev/ai-coding-dictionary/agent) can read to pick the work up.
+`handoff` copies the conversation you are in into a **handoff document**: one Markdown file, written to your OS's temporary directory rather than into the workspace, that a fresh [agent](https://www.aihero.dev/ai-coding-dictionary/agent) can read to pick the work up.
 
-What it buys is **portability**, not compression. That makes the skill narrower than it sounds. You need a file only when the work has to *travel*: to a new [harness](https://www.aihero.dev/ai-coding-dictionary/harness), a new directory, a colleague, or a side task you want to fork off. If nothing is travelling, you do not need a handoff: staying in the [session](https://www.aihero.dev/ai-coding-dictionary/session), `/clear`, a [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) and `/compact` cover the ordinary end-of-phase case, and `/compact` covers it more often than this skill does.
+The defining constraint is **verbatim**: it preserves every user-visible user and assistant message in order instead of compacting them into a summary. What it buys is portability without lossy compression. You need that file when the work has to travel: to a new [harness](https://www.aihero.dev/ai-coding-dictionary/harness), a new directory, a colleague, or a side task you want to fork off.
 
 ## When to reach for it
 
-You invoke this by typing `/handoff`; the agent won't reach for it on its own. Pass a note about what the next session is for, and the document is written for it.
+You invoke this by typing `/handoff`; the agent won't reach for it on its own. Pass a note about what the next session is for, and that note is recorded separately without changing the transcript.
 
 Four situations are the whole trigger:
 
@@ -17,60 +17,65 @@ Four situations are the whole trigger:
 | Sending the work to a colleague | They need something they can read |
 | Forking a side task found mid-phase | You keep working; a second agent takes the fork |
 
-For anything else (same harness, same directory, you are done [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) and moving to implementation), `/compact` is the move. [ask-matt](https://aihero.dev/skills-ask-matt) carries the ordered tree over all five options at a phase boundary.
+For anything else (same harness, same directory, and nothing needs to travel), staying in the [session](https://www.aihero.dev/ai-coding-dictionary/session), `/clear`, a [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent), or `/compact` is usually the move. [ask-matt](https://aihero.dev/skills-ask-matt) carries the ordered tree over all five options at a phase boundary.
 
-## Branching is the use people skip
+## Verbatim is the point
 
-The skill's description reads like session resumption: write a summary, end here, resume there. Read that way it looks like a worse `/compact`, so it gets skimmed past. The fork case is the one worth knowing. You **stay in your session** and hand a copy of the accumulated context to a second agent working in parallel.
+A summary can look complete while silently dropping rejected alternatives, exceptions, numerical defaults, and agreed ordering. A transcript does not decide what is important. It copies the visible conversation exactly as it happened, including assistant progress updates, and labels each speaker.
 
-That is what the detour through [prototype](https://aihero.dev/skills-prototype) uses. You are deep in a design conversation, you hit a question that only running code will settle, and you do not want to spend the thread you built on finding out. Hand off to a prototype session, get the answer, hand the answer back, and reference it from the original thread. Two crossings, one live conversation, nothing re-explained.
-
-Three of the five options at a phase boundary preserve different things: `/compact` preserves your intent, `/clear` preserves nothing, `/handoff` preserves the work's ability to move.
+The copy covers user-visible user and assistant messages. Hidden system or developer instructions, internal reasoning, and raw tool calls are not part of the transcript. If an older span is already unavailable verbatim, the document marks the gap rather than inventing or substituting a summary.
 
 ## What travels, and what doesn't
 
-The document carries the live thread (what's in flight, why, and what's next) plus a **suggested skills** section naming what the next agent should reach for. Secrets are redacted before it's written.
+The document carries the verbatim transcript, an optional next-session focus, and a **suggested skills** section naming what the next agent should reach for. The transcript is not shortened or redacted.
 
-What it deliberately does not carry is anything already written down. Specs, plans, ADRs, issues, commits and diffs are referenced by path or URL, never copied. That keeps the file small, and it keeps the settled detail in one place instead of two that drift.
+Specs, plans, ADRs, issues, commits, and diffs that already exist elsewhere are referenced by path or URL rather than copied again as supplemental material. That rule never edits the transcript itself: text that appeared in a message stays in the message.
+
+The final response shows the full absolute path as the label of a clickable local link. The filename alone is not enough; the path is the thing you paste into the fresh session.
 
 ## Common questions
 
 **Handoff or compact?**
-`/compact` unless something is travelling. Staying on the same task is a compact, not a handoff: same harness, same directory, and you need to stay in the loop is where the phase-boundary tree lands most days. `/handoff`'s advantage is not that it summarises better; it's that the result is a file you can carry somewhere `/compact` can't reach.
+
+Use `/handoff` when the conversation has to travel and you want its wording preserved. `/compact` compresses the context into a summary and continues in the same harness; it is smaller, but it can flatten a load-bearing detail. `/handoff` is deliberately longer because it keeps the visible dialogue verbatim.
 
 **So what's the actual difference between compact, clear and handoff?**
-Three different things being preserved. `/compact` compresses this context and keeps you going in a fresh window: intent survives. `/clear` empties the window and starts from nothing: correct when everything behind you is disposable, and one-way if it isn't. `/handoff` writes a portable file: the work survives the move to somewhere else. Note that all three turn a **[primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source)** (the conversation as it happened) into a **[secondary source](https://www.aihero.dev/ai-coding-dictionary/secondary-source)** (a summary of it). Continuing is the only move that doesn't, which is why it's the first one to rule out.
+
+`/compact` creates a [secondary source](https://www.aihero.dev/ai-coding-dictionary/secondary-source): a summary of what happened. `/clear` starts with nothing. `/handoff` makes a portable copy of the visible [primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source). Continuing still preserves more than any file because the live session also retains tool and harness state.
 
 **Where did my handoff file go?**
-The temp directory, which is the most-reported friction with the skill: the paths are long, they differ per OS, and on Windows agents sometimes take several attempts to find the right one. Ask for the path back and keep it before you move on. Temp is deliberate: a handoff is a transit document, not an artifact you maintain. It is not a durable one either; see the next question.
 
-**My handoff vanished between sessions.**
-Some environments clear temp between sessions (Codex is the reported case), and `/private/tmp` goes on reboot. If the next session isn't starting within the hour, or is starting under a different harness, copy the file somewhere durable yourself as soon as it's written. The same applies to anything the document *points at*: a dispatch that references other files in temp is a dispatch the next agent can't follow.
+The skill ends by showing the full absolute path as a clickable link. The file lives in the OS temp directory, which keeps it out of the workspace but is not durable storage. Some environments clear temp between sessions, and `/private/tmp` can disappear on reboot; move the file somewhere durable if the next session will not start soon.
 
 **How do I actually hand it to the next agent?**
-Open the fresh session and point it at the path: read this file, then continue. Point at the file rather than pasting the summary into a shell command: a summary containing backticks or `$(...)` gets mangled when it's interpolated into `claude "<summary>"`, and the usual failure is silent truncation rather than an error, so the new agent starts with a quietly incomplete brief.
 
-**Is this the same as `/branch`, `--fork-session`, or the built-in `/handoff`?**
-Analogous, not identical, and `/branch` isn't a shipped skill here; `/handoff` is the canonical name. A fork inherits an exact copy of the context; this skill produces a *targeted* compression aimed at a stated next task, in a file. Where a fork will do (same machine, same harness, same directory), a fork is less work. The file wins the moment the destination is somewhere the fork can't go.
+Open the fresh session and point it at the path: read this handoff file, then continue. Use the path shown by the skill rather than retyping or guessing the temp location.
 
-**When does something belong in `CLAUDE.md` instead?**
-Ask whether it's true next month. `CLAUDE.md` is standing context about the project, loaded into every session whether it's relevant or not. A handoff is about one piece of work in flight and is dead once that work lands. Facts that keep getting re-explained are a `CLAUDE.md` problem; a half-finished task is a handoff.
+**Does the artifact rule make the transcript incomplete?**
 
-**It captures the what, not the why.**
-A fair and repeated criticism. Two things help. Pass the argument (tell it what the next session is for) so the reasoning that bears on *that* is kept rather than flattened. And watch for confident claims the session never actually verified: "X isn't built", "Y is done". The next agent treats the document as a contract and will not re-check it, so a belief written as a fact becomes a false premise for everything that follows. Read the document before you hand it over, and downgrade anything you only assumed.
+No. Existing artifacts are not copied a second time into supplemental notes, but every visible message remains verbatim. If a message pasted part of a spec or diff, that text remains because it is part of the conversation history.
 
-**Why is it a skill rather than a slash command?**
-Both work; they suit different situations. As a skill it ships and updates through the same install path as everything else here, which is what makes it shareable; the constraint that the agent won't fire it itself is set by its frontmatter rather than by the mechanism.
+**What if the conversation was already compacted?**
+
+The skill cannot recover text the harness no longer provides. It marks that span as unavailable and copies everything it can still see verbatim. It never presents a reconstructed summary as the missing transcript.
+
+**Does it remove credentials or personal information?**
+
+No. Verbatim means no redaction. Treat the handoff file as at least as sensitive as the conversation it copies and share it accordingly.
+
+**Is this the same as `/branch`, `--fork-session`, or a built-in fork?**
+
+No. A native fork can inherit the harness's full context and tool state, but usually cannot cross into another harness, directory, or person's machine. This skill copies only the user-visible conversation into a file, which is less state than a native fork but more portable.
 
 ## It's working if
 
-- The document is a small fraction of the conversation, and the specs, issues and diffs appear in it as paths and URLs rather than as copied text.
-- You can read it cold, without the original session open, and know what to do next.
-- The fresh agent starts working instead of asking you to re-explain the setup.
-- In the fork case, your original session is still sitting there untouched when you come back to it.
-- The suggested-skills section names the skill you'd have reached for yourself.
-- Nothing in it is a key, a token, or a password.
+- Every available visible user and assistant message appears once, in the original order and wording.
+- No summary, paraphrase, pruning, or redaction replaces transcript text.
+- Existing specs, issues, commits, and diffs appear as paths or URLs rather than duplicated supplemental content.
+- The suggested-skills section names what the next agent should reach for.
+- The final response displays a clickable absolute path, not only a filename or relative path.
+- A fresh agent can start from the file without asking you to paste the conversation again.
 
 ## Where it fits
 
-`handoff` is a **reach-for-it-anytime standalone** that lives at the seam between sessions rather than inside a build chain, but a narrow one, and the honest map is that you'll use it less often than the other four options at a phase boundary. Its closest neighbour is [prototype](https://aihero.dev/skills-prototype), because a prototype lives in its own directory and the round trip out and back is exactly the crossing this skill is for. When you're at a boundary and unsure whether to continue, clear, hand off, delegate or compact, [ask-matt](https://aihero.dev/skills-ask-matt) carries the tree that orders those five, and routes you over the rest of the set.
+`handoff` is a **reach-for-it-anytime standalone** at the seam between sessions rather than a step inside a build chain. Its closest neighbour is [prototype](https://aihero.dev/skills-prototype), because a prototype lives in its own directory and the round trip out and back is exactly the crossing this skill is for. When you're unsure whether to continue, clear, hand off, delegate, or compact, [ask-matt](https://aihero.dev/skills-ask-matt) carries the tree that orders those five and routes you over the rest of the set.
