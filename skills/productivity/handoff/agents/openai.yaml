@@ -1,5 +1,5 @@
 interface:
   display_name: "Handoff"
-  short_description: "Verbatim transcript handoff"
+  short_description: "carlson-skills: Verbatim transcript handoff"
 policy:
   allow_implicit_invocation: false

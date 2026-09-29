@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Preserve the available user-visible conversation as a verbatim, portable handoff document with next-session focus, artifact references, suggested skills, and an absolute output path.
+description: From carlson-skills. Preserve the available user-visible conversation as a verbatim, portable handoff document with next-session focus, artifact references, suggested skills, and an absolute output path.
 argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---

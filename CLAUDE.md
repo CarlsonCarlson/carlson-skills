@@ -23,3 +23,11 @@ Every `SKILL.md` is either user-invoked (`disable-model-invocation: true` plus `
 To (re)link every skill outside `deprecated/` and `misc/` into the local harness skill directories (`~/.claude/skills`, `~/.agents/skills`), run `scripts/link-skills.sh`. Each entry is a symlink into this repo, so a `git pull` keeps installed skills current; re-run the script after adding, removing, or renaming a skill.
 
 No em-dashes anywhere in this repo's prose (`SKILL.md` files, docs, `README.md`, `CHANGELOG.md`, ADRs, changesets, code comments). Where a sentence reaches for one, rewrite it instead with a comma, colon, period, parentheses, or a conjunction, whichever the sentence actually wants; never do a blind character substitution.
+
+## Carlson's fork: source line
+
+This is Carlson's fork (carlson-skills). Every linked skill's `SKILL.md` description starts with `From carlson-skills.` and its `agents/openai.yaml` short description starts with `carlson-skills:`, so Claude Code and Codex show where each skill came from. Don't remove it. `scripts/add-source-line.mjs` adds it wherever it is missing (`--check` lists misses without changing anything). The local `post-merge` and `pre-commit` git hooks run it automatically. When an upstream merge conflicts on a description line, take upstream's text and let the script add the line back.
+
+## Carlson's fork: source line
+
+This is Carlson's fork (carlson-skills). Every linked skill's `SKILL.md` description starts with `From carlson-skills.` and its `agents/openai.yaml` short description starts with `carlson-skills:`, so Claude Code and Codex show where each skill came from. Don't remove it. `scripts/add-source-line.mjs` adds it wherever it is missing (`--check` lists misses without changing anything). The local `post-merge` and `pre-commit` git hooks run it automatically. When an upstream merge conflicts on a description line, take upstream's text and let the script add the line back.

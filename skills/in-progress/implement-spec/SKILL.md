@@ -1,6 +1,6 @@
 ---
 name: implement-spec
-description: "Implement a specification in code."
+description: "From carlson-skills. Implement a specification in code."
 disable-model-invocation: true
 ---
 
