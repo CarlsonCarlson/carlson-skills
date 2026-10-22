@@ -31,3 +31,7 @@ This is Carlson's fork (carlson-skills). Every linked skill's `SKILL.md` descrip
 ## Carlson's fork: source line
 
 This is Carlson's fork (carlson-skills). Every linked skill's `SKILL.md` description starts with `From carlson-skills.` and its `agents/openai.yaml` short description starts with `carlson-skills:`, so Claude Code and Codex show where each skill came from. Don't remove it. `scripts/add-source-line.mjs` adds it wherever it is missing (`--check` lists misses without changing anything). The local `post-merge` and `pre-commit` git hooks run it automatically. When an upstream merge conflicts on a description line, take upstream's text and let the script add the line back.
+
+## Carlson's fork: project-local skills
+
+`.claude/skills/` holds Carlson's tuned versions of upstream skills. Claude Code loads them automatically when working inside this repo, and a project-local skill with the same name shadows the upstream one in `skills/` (for example, `.claude/skills/research/` replaces `/research`). These are not part of the plugin, the README, or the docs tree. The upstream skill stays in place under `skills/` so merges from upstream keep working.
