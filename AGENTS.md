@@ -34,4 +34,7 @@ This is Carlson's fork (carlson-skills). Every linked skill's `SKILL.md` descrip
 
 ## Carlson's fork: project-local skills
 
-`.claude/skills/` holds Carlson's tuned versions of upstream skills. Claude Code loads them automatically when working inside this repo, and a project-local skill with the same name shadows the upstream one in `skills/` (for example, `.claude/skills/research/` replaces `/research`). These are not part of the plugin, the README, or the docs tree. The upstream skill stays in place under `skills/` so merges from upstream keep working.
+`.claude/skills/` holds Carlson's tuned versions of upstream skills (for example `.claude/skills/research/`). They are not part of the plugin, the README, or the docs tree, and the upstream skill stays in place under `skills/` so merges from upstream keep working. Two things to know about how Claude Code resolves them (see https://code.claude.com/docs/en/skills):
+
+- A personal skill in `~/.claude/skills/` wins over a project skill with the same name. `scripts/link-skills.sh` therefore links `.claude/skills/` last, so the tuned copy is the one that lands in `~/.claude/skills/` and `~/.agents/skills/`.
+- Cloud threads in a Claude project do not load a repo's `.claude/skills/`. To use a tuned skill there, save it to your account as well.

@@ -30,6 +30,14 @@ while IFS= read -r -d '' skill_md; do
   srcs+=("$src")
 done < <(find "$REPO/skills" -name SKILL.md -not -path '*/node_modules/*' -not -path '*/deprecated/*' -not -path '*/misc/*' -print0)
 
+# Carlson's fork: tuned copies in .claude/skills/ come last so that, on a name
+# clash, the symlink below points at the tuned copy rather than upstream's.
+while IFS= read -r -d '' skill_md; do
+  src="$(dirname "$skill_md")"
+  names+=("$(basename "$src")")
+  srcs+=("$src")
+done < <(find "$REPO/.claude/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -print0 2>/dev/null)
+
 for DEST in "${DESTS[@]}"; do
   # If $DEST is a symlink that resolves into this repo, we'd end up writing the
   # per-skill symlinks back into the repo's own skills/ tree. Detect and bail
