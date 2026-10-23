@@ -60,7 +60,7 @@ Questions get lost. The reader asks one, reads half the answer, asks another, an
 - End each substantive answer with a one-line check that names the question: "Did that answer why one exposure is enough, or was the question about how the write becomes something you hold in mind?" Give them a cheap way to reply: "yes", "no", "partly, the X bit".
 - When the reader asks "what questions have I not had answered?", dump the whole ledger with states.
 
-Where the ledger lives: in the conversation, in your own head, every turn. In a teaching workspace (a directory with `MISSION.md` and `learning-records/`, from the `teach` skill), mirror open and unconfirmed questions into that workspace's `NOTES.md` so the next session inherits them.
+Where the ledger lives: in the conversation, in your own head, every turn. In a teaching workspace (a directory with a `MISSION.md`, from the `teach` skill; `learning-records/` may not exist yet), mirror open and unconfirmed questions into that workspace's `NOTES.md`, creating the file if it is missing, so the next session inherits them.
 
 ## Rule 5: never offer, do it
 
